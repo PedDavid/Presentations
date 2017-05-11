@@ -34,20 +34,28 @@ int w = {0};    // same as z (might differ in c++17)
 
 ### Assignment vs Construction
 
-```c++
+<pre><code class="c++" data-trim data-noescape>
 Bar e1;         // call default ctor
-Bar e2 = e1;    // not an assignment; calls copy ctor
-e1 = e2;        // an assignment; calls copy operator=
-```
+Bar e2 = e1;    <span class="fragment">// not an assignment; calls copy ctor</span>
+ie1 = e2;       <span class="fragment">// an assignment; calls copy operator=</span>
+</code></pre>
 
 ----
 
 ### Most Vexing Parse
 
-```c++
+<pre style="margin:0 auto;box-shadow: none"><code class="c++" data-trim data-noescape>
 struct Bar{};
+</code></pre><pre class="inline-block fragment" style="margin:0 auto;box-shadow: none"><code class="c++" data-trim data-noescape>
+int main() {
+    Bar success();
+    return 0;
+}
+</code></pre><pre class="inline-block fragment" style="margin:0 auto;box-shadow: none"><code class="c++" data-trim data-noescape>
 Bar fail();
-```
+</code></pre>
+
+Note: Anything that can be parsed as a declaration must be interpreted as one.
 
 ----
 
@@ -61,7 +69,7 @@ Bar fail();
 
  - Works "everywhere"
 
-  - Default initialization values (new to C++11)
+  - Default initialization values (new to C++11) <!-- .element: class="fragment" -->
 ```c++
     class Bar{
         int x{1};   // fine, x's default value is 1
@@ -69,7 +77,7 @@ Bar fail();
         int z(0);   // error!
     }
 ```
-  - Initalizing uncopyable objects
+  - Initalizing uncopyable objects              <!-- .element: class="fragment" -->
 ```c++
     std::atomic<int> ai1{0};   // fine
     std::atomic<int> ai1(0);   // fine
@@ -88,33 +96,26 @@ int z = std::numeric_limits<long>::max();   // ditto
 
 ----
 
- ### Use it everywhere! (not)
+ ### <span class="fragment"> Don't </span> use it everywhere!
 
- - `auto` deduces std::initializer_list (changed in C++17)
- 
+ - auto deduces std::initializer_list (changed in C++17)  <!-- .element: class="fragment" -->
 ```c++
-auto x{1};  // std::initializer_list in C++11/14
-            // int in C++17
+    auto x{1};  // std::initializer_list in C++11/14
+                // int in C++17
 ```
 
 ----
 
- - **Strongly** prefers the overloads taking std::initializer_list
+ - **Strongly** prefers the overloads taking std::initializer_list<span class="fragment">, **really!**</span>
 
 ```c++
 struct Bar {
     Bar(int i, bool b);
     Bar(std::initializer_list<long double> il);
-};
-Bar b1(10, true);   // first ctor
-Bar b2{10, true};   // std::initializer_list ctor
-```
-
-```c++
-struct Bar {
-    ...
     operator float() const;     // convert to float
 };
+Bar b1(10, true);               // first ctor
+Bar b2{10, true};               // std::initializer_list ctor
 Bar b5(b2);                     // calls copy ctor
 Bar b6{b2};                     // std::initializer_list ctor
 ```

@@ -46,7 +46,7 @@ int w = {0};
 Uniform initialization(idea) or Braced initialization(syntatic construct) can be used to specify default initialization values for non-static members. This capability, new to C++11, is shared with the = initializtion syntax, but not with parentheses.
 On the other hand, uncopyable objects may be initialized using braces or parentheses, but not using =.
 A feature of braced initialization is that it prohibits implicit narrowing conversions among built-in types. The other two permit it.
-Immunity to C++ most vexing parse. Anythig that can be parsed as a declaration must be interpreted as one.
+Immunity to C++ most vexing parse. Anything that can be parsed as a declaration must be interpreted as one.
 Initializer list (oh god... why?)
 TODO: conversions
 vs Default(no Argument) Constructor
