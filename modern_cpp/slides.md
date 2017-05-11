@@ -106,7 +106,7 @@ auto x{1};  // std::initializer_list in C++11/14
 struct Bar {
     Bar(int i, bool b);
     Bar(std::initializer_list<long double> il);
-}
+};
 Bar b1(10, true);   // first ctor
 Bar b2{10, true};   // std::initializer_list ctor
 ```
@@ -115,7 +115,7 @@ Bar b2{10, true};   // std::initializer_list ctor
 struct Bar {
     ...
     operator float() const;     // convert to float
-}
+};
 Bar b5(b2);                     // calls copy ctor
 Bar b6{b2};                     // std::initializer_list ctor
 ```
@@ -128,7 +128,7 @@ Bar b6{b2};                     // std::initializer_list ctor
 struct Bar {
     Bar(int i, double b);
     Bar(std::initializer_list<bool> il);
-}
+};
 Bar b{10, 5.0}; // error! requires narrowing conversions
 ```
 
@@ -138,7 +138,7 @@ Bar b{10, 5.0}; // error! requires narrowing conversions
 struct Bar {
     Bar(int i, double b);
     Bar(std::initializer_list<std::string> il);
-}
+};
 Bar b{10, 5.0}; // now calls first ctor
 ```
 
@@ -163,7 +163,7 @@ This works
 ```c++
 struct Bar{
     Bar(int value);
-}
+};
 std::vector<Bar> vec{1, 2, 3};    
 ```
 
@@ -172,14 +172,13 @@ This doesn't
 ```c++
 struct Bar{
     explicit Bar(int value);
-}
+};
 std::vector<Bar> vec{1, 2, 3};    
 ```
 
-----
+---
 
 ## Type Deduction
-
 
 ```c++
 std::unique_ptr<std::unordered_map<std::string, std::string>> uptrmapss = ...;
@@ -231,7 +230,27 @@ std::unique_ptr<Bar> x{new Bar{0}};
 auto y = std::make_unique<Bar>(0);
 ```
 
-TODO: std::make_unique() vs {} (test with vector)
+----
+
+### Prefer std::make_unique and std::make_shared to direct use of new
+
+----
+
+## Implementation details
+
+```c++
+auto vec = std::make_unique<std::vec<int>>(10, 20); // 10 20's
+```
+
+```c++
+template<typename T, typename... Ts>
+std::unique_ptr<T> make_unique(Ts&&... params)
+{
+    return std::unique_ptr<T>(new T(std::forward<Ts>(params)...));
+    // new T{std::forward<Ts>(params)...}
+    //  this would make vec{10, 20}, a vec with 2 elements, 10 and 20
+}
+```
 
 ---
 
@@ -249,6 +268,7 @@ int main() {
     {
         product *= *itr;
     }
+    return 0;
 }
 ```
 
@@ -266,13 +286,13 @@ int main() {
     {
         product *= *itr;
     }
+    return 0;
 }
 ```
 
 ----
 
 ### `auto`
-
 
 ```c++
 int main() {
@@ -284,6 +304,7 @@ int main() {
     {
         product *= *itr;
     }
+    return 0;
 }
 ```
 
@@ -298,6 +319,7 @@ int main() {
     for (const auto val : vec) {
         product *= val;
     }
+    return 0;
 }
 ```
 
@@ -311,5 +333,41 @@ int main() {
     for (const auto val : {1, 2, 3}) {
         product *= val;
     }
+    return 0;
+}
+```
+
+---
+
+# How Modern C++ makes things better
+
+TODO: Insert sad or disgust emoji
+```c++
+struct Base {
+    Base(int value);
+};
+struct Derived {
+    Derived(int value);
+};
+int main() {
+    Bar* pointer = new Derived(0);
+    delete pointer;
+    return 0;
+}
+```
+
+### Smart Pointers
+
+```c++
+struct Base {
+    const int value;
+    Base(int value) : value{value} { }
+};
+struct Derived : Base {
+    Derived(int value) : Base{value} { }
+};
+int main() {
+    auto pointer = std::make_unique<Bar>(0);
+    return 0;
 }
 ```
