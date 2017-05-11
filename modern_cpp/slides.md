@@ -256,17 +256,19 @@ std::unique_ptr<T> make_unique(Ts&&... params)
 
 # How Modern C++ makes things better
 
-TODO: Insert sad or disgust emoji
+Note: Insert sad or disgust emoji
+Note: Check insert and const
 ```c++
 int main() {
-    const std::vector<int> vec;
-    vec.push_back(1); vec.push_back(2); vec.push_back(3);
+    std::map<intm std::string> map;
+    map[1] = "Hi"; map[2] = "World";
     int product = 1;
-    for (std::vector<int>::const_iterator itr = vec.begin();
+    for (std::map<int, std::string>::const_iterator itr = map.begin();
         itr != vec.end();
         ++itr) 
     {
-        product *= *itr;
+        product *= itr->first;
+        std::cout << itr->second;
     }
     return 0;
 }
@@ -278,13 +280,14 @@ int main() {
 
 ```c++
 int main() {
-    const std::vector<int> vec{1, 2, 3};
+    const std::map<int, std::string> map{{1, "Hi"}, {2, "World"}};
     int product = 1;
-    for (std::vector<int>::const_iterator itr = vec.begin();
+    for (std::map<int, std::string>::const_iterator itr = map.begin();
         itr != vec.end();
         ++itr) 
     {
-        product *= *itr;
+        product *= itr->first;
+        std::cout << itr->second;
     }
     return 0;
 }
@@ -296,13 +299,14 @@ int main() {
 
 ```c++
 int main() {
-    const std::vector<int> vec{1, 2, 3};
+    const std::map<int, std::string> map{{1, "Hi"}, {2, "World"}};
     int product = 1;
-    for (auto itr = vec.begin();
-        itr != vec.end();
+    for (auto itr = map.begin();
+        itr != map.end();
         ++itr) 
     {
-        product *= *itr;
+        product *= itr->first;
+        std::cout << itr->second;
     }
     return 0;
 }
@@ -314,10 +318,11 @@ int main() {
 
 ```c++
 int main() {
-    const std::vector<int> vec{1, 2, 3};
+    const std::map<int, std::string> map{{1, "Hi"}, {2, "World"}};
     int product = 1;
-    for (const auto val : vec) {
-        product *= val;
+    for (const auto& val : map) {
+        product *= val.first;
+        std::cout << val.second;
     }
     return 0;
 }
@@ -325,17 +330,21 @@ int main() {
 
 ----
 
-### Inline the container
+### Structured Bindings (C++17)
 
 ```c++
 int main() {
+    const std::map<int, std::string> map{{1, "Hi"}, {2, "World"}};
     int product = 1;
-    for (const auto val : {1, 2, 3}) {
-        product *= val;
+    for (const auto& [key, name] : map) {
+        product *= key;
+        std::cout << name;
     }
     return 0;
 }
 ```
+
+TODO: Structured Bindings
 
 ---
 
@@ -355,6 +364,8 @@ int main() {
     return 0;
 }
 ```
+
+----
 
 ### Smart Pointers
 
