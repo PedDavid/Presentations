@@ -1,0 +1,178 @@
+C++03 temporaries(termed rvalues) inteded to never be modifiable, just as in C, and were considered to be inditiguishable from const T&
+C++11 adds new non-const reference type called rvalue reference, identified by T&&, for purpose of allowing "move semantics"
+Ex: In C++03 a temporary std::vector needs to create another and copy the buffer(neglecting return value optimization), in C++11, a move constructor can make the new vector point to the temporary buffer and set the rvalue pointer to null
+Temporaries are considered rvalues automatically
+
+	constexpr
+
+Usage of constexpr objects. (such objects are, in fact, const)
+int size = 5 + 7;
+int arr[size]; -> Compile time error
+____________________________________
+
+const vs constexpr?
+const int size = 5;
+int arr[size]; -> Compiles, doesn't have to
+____________________________________
+int five = 5;
+const int size = five; -> fine, size is const at runtime
+int arr[size]; -> Compile Time Error
+____________________________________
+const doesn't mean compile time const
+Simply put, all constexpr object are const but not all const objects are constexpr. If you want compilers to guarantee that a variable has a value that can be used in contexts requiring compile-time constants, the tool to reach for is constexpr, not const.
+
+
+Usage of constexpr in functions (more interesting... and complicated)
+These functions produce compile-time constants... when they are called with compile-time constants, otherwise they produce runtime values.
+So, they can be used in context you need a compile-time constant, but can be used as a normal function (no need to multiple functions to perform the same operation!)
+
+Because constexpr functions must be able to return compile-time results when called with compile-time values, restrictions are imposed on their implementations. The restrictions differ between C++11 and C++14.
+In C++11, they can't have more than a single executable statement, a return, in C++14 the restrictions are substantially looser.
+
+constexpr function 'foo' cannot result in a constant expression, type 'Bar' is not a literal type
+
+More constexpr code = less code run at runtime = faster software = longer compilation :(
+
+C++11 setters can't be declared constexpr. First, they modify the object they operate on, second, they have void return types, void isn't a literal type in C++11. Both restrictions are lifted in C++14.
+
+
+	Initialization of values:
+
+int x(0);
+int y = 0;
+int z{0};
+int w = {0};
+
+Uniform initialization(idea) or Braced initialization(syntatic construct) can be used to specify default initialization values for non-static members. This capability, new to C++11, is shared with the = initializtion syntax, but not with parentheses.
+On the other hand, uncopyable objects may be initialized using braces or parentheses, but not using =.
+A feature of braced initialization is that it prohibits implicit narrowing conversions among built-in types. The other two permit it.
+Immunity to C++ most vexing parse. Anythig that can be parsed as a declaration must be interpreted as one.
+Initializer list (oh god... why?)
+TODO: conversions
+vs Default(no Argument) Constructor
+W w{}; //Calls default ctor
+W w{{}}//Calls std::initializer_list ctor
+
+
+	nullptr
+Here's the deal, neither 0 or NULL is a pointer, that said in C (and a consequently a lot of C++) 0/NULL are used to represent a "null pointer".
+In c++ this is even more dangerous because of function overloading.
+void f(int);
+void f(void*);
+f(0); 		//calls f(int)
+f(NULL); //might not compile, but typically calls f(int). Never calls f(void*)
+
+nullptr advantage is taht it doesn't have an integral type. (tbh it doesn't have a pointer type, either, but you can think of it as a pointer of all types).
+nullptr actual type is std::nullptr_t implicitly converts to all raw pointer types!
+
+	Avoids overload resolution surprises
+Improves code clarity
+Use with Templates (pg 61)
+
+	Prefer alias to typedefs
+Arguably more readable
+Support templatiazation
+
+	Prefer scoped enums to unscoped enums
+C++98-style enums (enum) belong to the scope containing the enum (a lot of polution) (unscoped enum)
+Scoped enums (enum class) don't leak names
+Unscoped enums implicitly convert to integral types(and, from there, to floating-point types)
+if you really want to perform conversion use static_cast
+scoped enums can be forward declared (unscoped enums can too in C++11 if you specify the umderlying type ex: enum Color: std::uint8_t)
+
+	Prefer deleted functions to private undefined ones
+Hack from C++98, making it private unables clients to call it and will fail link if members or friends try to access them.
+Using delete will fail compilation (improvement to C++98 where this would only be detected at link-time)
+C++ checks accessibility before deleted status, so make delete functions public
+Only member functions should be private, all functions can be deleted
+Deleting specific overload
+
+	Function Reference qualifiers
+
+	Declare overriding functions override (and final keyword)
+For overriding to occur, several requirements must be met:
+  - The base class function must be virtual
+  - The base and derived function names must be identical(except destructors)
+  - The parameter types of the base and derived functions must be identical
+  - The constness of the base and derived functions must be identical
+  - The return types and exception specifications of the base and derived functions must be compatible
+  C++11 adds one more
+  - The functions reference qualifiers must be identical.
+If the programmer makes a mistake "overriding" a function the compiler may not warn him.
+If the programmer uses override won't compile, because the compiler will check for the overriding related problems.
+
+	Prefer const_iterators to iterators
+Use const whenever possible, so... use const iterators anytime you need an iterator, yet have no need to modify what the iterator points to.
+For generic purposes, prefer non-member bersions of begin, end, rbegin...
+
+	Declare functions noexcept if they won't emit exceptions
+part of function interface, callers may depend on it
+noexcept functions are more optimizable
+most functions are exception-neutral rather than noexcept (they don't emit exceptions but functions that they call may emit)
+
+	Understand special member function generation
+Special member functions are the ones that C++ is willing to generate on its own
+C++98 has 4 such functions: default constructor, destructor, copy constructor and copy assignment operator.
+Default constructor is generated only if the class declares no constructors at all.
+C++11 has 2 more. Move constructor and move assignment operator
+  Bar(Bar&& rhs);
+  Bar& operator=(Bar&& rhs);
+Declaring either move operation prevents the compiler from generating the other. Why? Because by declaring one you are saying there is something special to handle in case of "move request" so you should probably have to change the other.
+Declaring a copy operation prevent the compiler from generating move operations. Declaring it indicates that the normal approach to copying an object(memberwise copy) isn't appropriate for the class compiler figures that memberwise move probably isn't appropriate too.
+
+Declaring a move operation causes compilers to disable the copy operations.
+  The Rule of Three! If you declare any of a copy ctor, copy assignment operator or destructor, you should declare all three.
+
+C++11 does not generate move operations for a class with user-declared destructor. C++11 also deprecates the automatic generation of copy operations for classes declaring copy operations or a destructor.
+If memberwise copying of the class non-static data memebers is what you want the job is easy using =default
+
+	Smart Pointers
+//TODO
+Prefer std::make_unique and std::make_shared to direct use of new
+  - Avoids source code duplication
+  - Improve exception safety
+
+	Type Inference
+
+	Range-based for loop
+
+	Lambda functions and expressions
+	
+	Explicit conversion operators
+
+	Variadic templates
+
+	New string literals
+	User defined literals (starting with anything but _ is reserved by the standard)
+	static_assert
+	allow sizeof to work on members of classes without an explicit object
+	alignof
+
+	C++14
+
+	Function return type deduction
+	Variable templates
+	Binary literals
+	Digit separators '
+	Generic lambdas (parameters)
+	Lambda capture expressions
+	Standard user-defined literals, s for std::basic_string, std::chorno::duration and if, i, il for imaginary numbers std::complex<float>
+
+	C++17
+	Making the text message for static_assert optional
+	Allow typename in template parameter
+	New rules for auto deduction from braced-init-list
+	Nested namespace definitions
+	fold expressions, for variadic templates
+	compile-time static if (if constexpr(expr))
+	structured binding declarations (auto [a, b] = getTwoReturnValues();
+	initializers in if and switch
+	template deduction of constructors
+		Library:
+	std::string_view
+	std::optional
+	std::any
+	std::variant (tagged union container)
+	std::byte
+	Parallel versions of STL algorithms
+	A filesystem library
