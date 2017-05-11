@@ -9,27 +9,26 @@ How to do something in modern C++
 ----
 
 > C++ is a general-purpose programming language. It has imperative, object-oriented and generic programming features, while also providing facilities for low-level memory manipulation.
-> - Wikipedia
+[Wikipedia](https://en.wikipedia.org/wiki/C%2B%2B)
 
 ----
 
 # HARD
 
-> - Most Users and all newcomers
+Most users and all newcomers <!-- .element: class="fragment" -->
 
 
 ---
 
 ## Variable initialization
 
-```c++
+<pre style="margin:0 auto;box-shadow: none"><code class="c++" data-trim data-noescape>
 int x = 0;
 int y(0);
-```
-```c++
+</code></pre><pre class="inline-block fragment" style="margin:0 auto;box-shadow: none"><code class="c++" data-trim data-noescape>
 int z{0};       // c++11 uniform initialization
 int w = {0};    // same as z (might differ in c++17)
-```
+</code></pre>
 
 ----
 
