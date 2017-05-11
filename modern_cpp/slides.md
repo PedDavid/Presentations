@@ -228,7 +228,7 @@ auto res = sum_one(2);
 
 ```c++
 std::unique_ptr<Bar> x{new Bar{0}};
-auto y = std::make_unique<Bar>{0};
+auto y = std::make_unique<Bar>(0);
 ```
 
 TODO: std::make_unique() vs {} (test with vector)
