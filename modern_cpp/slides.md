@@ -3,9 +3,13 @@
 
 <div align="right">Pedro David</div>
 
+Note: Modern? From C with objects to now.
+
 ---
 
 ## C++ is...?
+
+Note: Ask audience if anyone has used C++, ask to keep hands up and ask about new and delete, ask those who use it to lower their hands.
 
 ----
 
@@ -29,145 +33,6 @@ and most users, specially newcomers <!-- .element: class="fragment" -->
 
 ---
 
-# How modern C++ makes things better
-
----
-
-### Memory managemt
-
-```c++
-struct Base {
-    Base(int value);
-};
-struct Derived {
-    Derived(int value);
-};
-int main() {
-    Bar* pointer = new Derived(0);
-    delete pointer;
-    return 0;
-}
-```
-
-Note: Is error prone, boring
-
-----
-
-### Smart Pointers
-
-```c++
-struct Base {
-    const int value;
-    Base(int value) : value{value} { }
-};
-struct Derived : Base {
-    Derived(int value) : Base{value} { }
-};
-int main() {
-    auto pointer = std::make_unique<Bar>(0);
-    return 0;
-}
-```
-
-Note: std::make_unique<T> is C++14 only
-        TODO: Add link to Smart Pointer slides
-
----
-
-# How Modern C++ makes things better
-
-Note: Insert sad or disgust emoji
-Note: Check insert and const
-```c++
-int main() {
-    std::map<intm std::string> map;
-    map[1] = "Hi"; map[2] = "World";
-    int product = 1;
-    for (std::map<int, std::string>::const_iterator itr = map.begin();
-        itr != vec.end();
-        ++itr) 
-    {
-        product *= itr->first;
-        std::cout << itr->second;
-    }
-    return 0;
-}
-```
-
-----
-
-### Initializer lists
-
-```c++
-int main() {
-    const std::map<int, std::string> map{{1, "Hi"}, {2, "World"}};
-    int product = 1;
-    for (std::map<int, std::string>::const_iterator itr = map.begin();
-        itr != vec.end();
-        ++itr) 
-    {
-        product *= itr->first;
-        std::cout << itr->second;
-    }
-    return 0;
-}
-```
-
-----
-
-### `auto`
-
-```c++
-int main() {
-    const std::map<int, std::string> map{{1, "Hi"}, {2, "World"}};
-    int product = 1;
-    for (auto itr = map.begin();
-        itr != map.end();
-        ++itr) 
-    {
-        product *= itr->first;
-        std::cout << itr->second;
-    }
-    return 0;
-}
-```
-
-----
-
-### Range-Based For Loop
-
-```c++
-int main() {
-    const std::map<int, std::string> map{{1, "Hi"}, {2, "World"}};
-    int product = 1;
-    for (const auto& val : map) {
-        product *= val.first;
-        std::cout << val.second;
-    }
-    return 0;
-}
-```
-
-----
-
-### Structured Bindings (C++17)
-
-```c++
-int main() {
-    const std::map<int, std::string> map{{1, "Hi"}, {2, "World"}};
-    int product = 1;
-    for (const auto& [key, name] : map) {
-        product *= key;
-        std::cout << name;
-    }
-    return 0;
-}
-```
-
-Note: TODO: Structured Bindings
-
----
-
 ## Variable initialization
 
 <pre style="margin:0 auto;box-shadow: none"><code class="c++" data-trim data-noescape>
@@ -176,7 +41,7 @@ int y(0);
 </code></pre>
 <pre class="fragment" style="margin:0 auto;box-shadow: none"><code class="c++" data-trim data-noescape>
 int z{0};       // c++11 uniform initialization
-int w = {0};    // same as z (might differ in c++17)
+int w = {0};    // "same" as z
 </code></pre>
 
 ----
@@ -230,13 +95,23 @@ Works "everywhere"
 
 ----
 
-Prohibits implicit narrowing conversions among built-in types
+<span class="fragment" data-fragment-index="2">Prohibits implicit narrowing conversions among built-in types</span>
 
-```c++
-int x{std::numeric_limits<long>::max()};    // compile-time error!
-int y(std::numeric_limits<long>::max());    // okay...(truncated)
-int z = std::numeric_limits<long>::max();   // ditto
-```
+<pre style="margin:0 auto;box-shadow: none"><code class="c++" data-trim data-noescape>
+int x(std::numeric_limits&ltlong&gt::max());    // okay...(truncated)
+int y = std::numeric_limits&ltlong&gt::max();   // ditto
+</code></pre>
+<pre class="fragment" data-fragment-index="1" style="margin:0 auto;box-shadow: none"><code class="c++" data-trim data-noescape>
+int z{std::numeric_limits&ltlong&gt::max()};    <span class="fragment" data-fragment-index="2">// compile-time error!</span>
+</code></pre>
+
+<div class="fragment" data-fragment-index="3" style="font-size:60%">
+Great presentations
+<div>Hubert Matthews - [The C++ Type System is your Friend](https://www.youtube.com/watch?v=MCiVdu7gScs)</div>
+<div>Ben Deane - [Using Types Effectively](https://www.youtube.com/watch?v=ojZbFIQSdl8)</div>
+</div>
+
+Note: Ask audience opinion on this, then show links
 
 ----
 
@@ -293,6 +168,176 @@ Bar b{};    // calls default ctor
 <pre class="fragment" data-fragment-index="2" style="margin:0 auto;box-shadow: none"><code class="c++" data-trim data-noescape>
 Bar b{{}};  // calls init list ctor
 </code></pre>
+
+---
+
+# How modern C++ makes things better
+
+---
+
+### Memory management
+
+```c++
+struct Base {
+    Base(int value);
+};
+struct Derived {
+    Derived(int value);
+};
+int main() {
+    Bar* pointer = new Derived(0);
+    delete pointer;
+    return 0;
+}
+```
+
+Note: Is error prone, boring
+
+----
+
+### [Smart Pointers](#/smart_pointers)
+
+```c++
+struct Base {
+    const int value;
+    Base(int value) : value{value} { }
+};
+struct Derived : Base {
+    Derived(int value) : Base{value} { }
+};
+int main() {
+    auto pointer = std::make_unique<Bar>(0);
+    return 0;
+}
+```
+
+Note: RAII(Resource acquisition is initialization)
+        Exception-safe because C++ guarantees that all stack objects are destroyed at the end of the enclosing scope, known as stack unwinding(assembly pops);
+        Destructors are exception-safe(noexcepetd(TODO: link)) and are always called if object is fully constructed, no exception came from constructor
+        std::make_unique<T> is C++14 only;
+        TODO: Add link to Smart Pointer slides;
+
+---
+
+### And let's not talk about this :'(
+```c++
+int main() {
+    std::map<int, std::string> map;
+    map[1] = "Hi"; map[2] = "World";
+    int product = 1;
+    for (std::map<int, std::string>::const_iterator itr = map.begin();
+        itr != vec.end();
+        ++itr) 
+    {
+        product *= itr->first;
+        std::cout << itr->second;
+    }
+    return 0;
+}
+```
+
+----
+
+### [Initializer lists](#/initializer_lists)
+
+```c++
+int main() {
+    const std::map<int, std::string> map{{1, "Hi"}, {2, "World"}};
+    int product = 1;
+    for (std::map<int, std::string>::const_iterator itr = map.begin();
+        itr != vec.end();
+        ++itr) 
+    {
+        product *= itr->first;
+        std::cout << itr->second;
+    }
+    return 0;
+}
+```
+
+----
+
+### [auto](#/auto)
+
+```c++
+int main() {
+    const std::map<int, std::string> map{{1, "Hi"}, {2, "World"}};
+    int product = 1;
+    for (auto itr = map.begin();
+        itr != map.end();
+        ++itr) 
+    {
+        product *= itr->first;
+        std::cout << itr->second;
+    }
+    return 0;
+}
+```
+
+----
+
+### [Range-Based For Loop](#/range_based_fl)
+
+```c++
+int main() {
+    const std::map<int, std::string> map{{1, "Hi"}, {2, "World"}};
+    int product = 1;
+    for (const auto& val : map) {
+        product *= val.first;
+        std::cout << val.second;
+    }
+    return 0;
+}
+```
+
+----
+
+### [Structured Bindings](#/structured_bindings)
+
+```c++
+int main() {
+    const std::map<int, std::string> map{{1, "Hi"}, {2, "World"}};
+    int product = 1;
+    for (const auto& [key, name] : map) {
+        product *= key;
+        std::cout << name;
+    }
+    return 0;
+}
+```
+
+Note: Available in C++17
+
+---
+<!-- .slide: id="smart_pointers" -->
+## Smart-Pointers
+
+```c++
+std::unique_ptr<Bar> x{new Bar{0}};
+auto y = std::make_unique<Bar>(0);
+```
+
+----
+
+### Prefer std::make_unique and std::make_shared to direct use of new
+
+----
+
+## Implementation details
+
+```c++
+auto vec = std::make_unique<std::vec<int>>(10, 20); // 10 20's
+```
+
+```c++
+template<typename T, typename... Ts>
+std::unique_ptr<T> make_unique(Ts&&... params)
+{
+    return std::unique_ptr<T>(new T(std::forward<Ts>(params)...));
+    // new T{std::forward<Ts>(params)...}
+    //  this would make vec{10, 20}, a vec with 2 elements, 10 and 20
+}
+```
 
 ---
 
@@ -382,37 +427,6 @@ auto res = sum_one(2);
 int one{1};
 auto sum_one = [one](const auto rhs){ return one + rhs; };
 auto res = sum_one(2);
-```
-
----
-
-## Smart-Pointers
-
-```c++
-std::unique_ptr<Bar> x{new Bar{0}};
-auto y = std::make_unique<Bar>(0);
-```
-
-----
-
-### Prefer std::make_unique and std::make_shared to direct use of new
-
-----
-
-## Implementation details
-
-```c++
-auto vec = std::make_unique<std::vec<int>>(10, 20); // 10 20's
-```
-
-```c++
-template<typename T, typename... Ts>
-std::unique_ptr<T> make_unique(Ts&&... params)
-{
-    return std::unique_ptr<T>(new T(std::forward<Ts>(params)...));
-    // new T{std::forward<Ts>(params)...}
-    //  this would make vec{10, 20}, a vec with 2 elements, 10 and 20
-}
 ```
 
 ---
