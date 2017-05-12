@@ -1,17 +1,10 @@
-Structured Bindings and Tuples
-Async and Thread Safety
+Check draft for small feature examples
+List features
+
 String literals and typesafety
+Async and Thread Safety
 
-Check TODOS in slides.md
-Check const map and [];
+Future of C++
+Structured Bindings and Tuples
 
-Restructure Presentation
-Start with Initialization, go to improving maybe go to details, the future
-
-Links, emojis
-
-Introduction in presentation (mine and presentation)
-Check Guidelines on thoth
-Presentation Transitions
-
-Bibliography: Json Turner, Effective Modern C++
+Compile-Time Factorial Demo

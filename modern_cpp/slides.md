@@ -3,7 +3,7 @@
 
 <div align="right">Pedro David</div>
 
-Note: Modern? From C with objects to now.
+Note: Modern? From C with classes to now.
 
 ---
 
@@ -213,9 +213,8 @@ int main() {
 
 Note: RAII(Resource acquisition is initialization)
         Exception-safe because C++ guarantees that all stack objects are destroyed at the end of the enclosing scope, known as stack unwinding(assembly pops);
-        Destructors are exception-safe(noexcepetd(TODO: link)) and are always called if object is fully constructed, no exception came from constructor
+        Destructors are exception-safe(noexcepet(TODO: link)) and are always called if object is fully constructed, no exception came from constructor
         std::make_unique<T> is C++14 only;
-        TODO: Add link to Smart Pointer slides;
 
 ---
 
@@ -309,107 +308,6 @@ int main() {
 Note: Available in C++17
 
 ---
-<!-- .slide: id="smart_pointers" -->
-## Smart-Pointers
-
-```c++
-std::unique_ptr<Bar> x{new Bar{0}};
-auto y = std::make_unique<Bar>(0);
-```
-
-----
-
-### Prefer std::make_unique and std::make_shared to direct use of new
-
-----
-
-## Implementation details
-
-```c++
-auto vec = std::make_unique<std::vec<int>>(10, 20); // 10 20's
-```
-
-```c++
-template<typename T, typename... Ts>
-std::unique_ptr<T> make_unique(Ts&&... params)
-{
-    return std::unique_ptr<T>(new T(std::forward<Ts>(params)...));
-    // new T{std::forward<Ts>(params)...}
-    //  this would make vec{10, 20}, a vec with 2 elements, 10 and 20
-}
-```
-
----
-
-## <span class="fragment" data-fragment-index="1">Initializer List</span>
-
-```c++
-std::vector<int> vec;
-vec.push_back(1); vec.push_back(2); vec.push_back(3);
-```
-
-<pre class="fragment" data-fragment-index="1" style="margin:0 auto;box-shadow: none"><code class="c++" data-trim data-noescape>
-std::vector&ltint&gt vec{1, 2, 3};
-</code></pre>
-
-----
-
-This works
-
-```c++
-struct Bar{
-    Bar(int value);
-};
-std::vector<Bar> vec{1, 2, 3};    
-```
-
-This doesn't
-
-```c++
-struct Bar{
-    explicit Bar(int value);
-};
-std::vector<Bar> vec{1, 2, 3};    
-```
-
----
-
-## <span class="fragment" data-fragment-index="1">Type Deduction<span>
-
-```c++
-std::unique_ptr<std::unordered_map<std::string, std::string>> uptrmapss = some_factory();
-```
-
-<pre class="fragment" data-fragment-index="1" style="margin:0 auto;box-shadow: none"><code class="c++" data-trim data-noescape>
-auto uptrmapss = some_factory();
-</code></pre>
-
-Note: Functions can have auto return type since C++14
-        Discuss about audience likeliness of auto
-        Todo: Slides about type deduction
-
----
-
-## <span class="fragment" data-fragment-index="1">Range-Based For Loop</span>
-
-```c++
-std::vector<Bar> vec;
-for(std::vector<Bar>::const_iterator itr = vec.begin();
-    itr != vec.end();
-    ++itr)
-{
-    // ...
-}
-```
-
-<pre class="fragment" data-fragment-index="1" style="margin:0 auto;box-shadow: none"><code class="c++" data-trim data-noescape>
-std::vector&ltBar&gt vec;
-for(const Bar b : vec) {
-    // ...
-}
-</code></pre>
-
----
 
 ## Lambdas
 
@@ -419,15 +317,15 @@ auto sum_one = [one](const int rhs){ return one + rhs; };
 auto res = sum_one(2);
 ```
 
-----
+---
 
-### Generic Lambdas (C++14)
+## Resources
 
-```c++
-int one{1};
-auto sum_one = [one](const auto rhs){ return one + rhs; };
-auto res = sum_one(2);
-```
+Scott Meyers, "Effective Modern C++"
+
+[Jason Turner, “Practical Performance Practices"](https://www.youtube.com/watch?v=uzF4u9KgUWI) 
+
+[Jason Turner, "Intro To Modern Cpp"](https://github.com/lefticus/presentations/tree/master/IntroToModernCpp)
 
 ---
 
@@ -435,4 +333,10 @@ auto res = sum_one(2);
 
 This slide can be found on
 
-[Github]()
+[Github](https://github.com/PedDavid/Presentations/tree/master/modern_cpp)
+
+Note: Show factorial demo
+        http://en.cppreference.com/w/cpp/compiler_support ;
+        https://gcc.gnu.org/gcc-7/ ;
+        http://releases.llvm.org/ ;
+        https://blogs.msdn.microsoft.com/vcblog/2017/05/10/c17-features-in-vs-2017-3/ ;
