@@ -1,6 +1,7 @@
-# Modern C++
+# <span class="fragment">Modern</span>
+# C++
 
-How to do something in modern C++
+<div align="right">Pedro David</div>
 
 ---
 
@@ -9,14 +10,67 @@ How to do something in modern C++
 ----
 
 > C++ is a general-purpose programming language. It has imperative, object-oriented and generic programming features, while also providing facilities for low-level memory manipulation.
+
 [Wikipedia](https://en.wikipedia.org/wiki/C%2B%2B)
 
 ----
 
-# HARD
+> It is used in high performance software, resource-constrained programming, large scale software infrastructure, and, most recently, energy-constrained environment (mobile and cloud).
 
-Most users and all newcomers <!-- .element: class="fragment" -->
+[Sergey Zubkov, Quora](https://www.quora.com/What-is-C++-used-for/answer/Sergey-Zubkov-1)
 
+----
+
+> It is hard
+
+[Pedro David](#/1/3)
+
+and most users, specially newcomers <!-- .element: class="fragment" -->
+
+---
+
+# How modern C++ makes things better
+
+---
+
+### Memory managemt
+
+```c++
+struct Base {
+    Base(int value);
+};
+struct Derived {
+    Derived(int value);
+};
+int main() {
+    Bar* pointer = new Derived(0);
+    delete pointer;
+    return 0;
+}
+```
+
+Note: Is error prone, boring
+
+----
+
+### Smart Pointers
+
+```c++
+struct Base {
+    const int value;
+    Base(int value) : value{value} { }
+};
+struct Derived : Base {
+    Derived(int value) : Base{value} { }
+};
+int main() {
+    auto pointer = std::make_unique<Bar>(0);
+    return 0;
+}
+```
+
+Note: std::make_unique<T> is C++14 only
+        TODO: Add link to Smart Pointer slides
 
 ---
 
@@ -25,7 +79,8 @@ Most users and all newcomers <!-- .element: class="fragment" -->
 <pre style="margin:0 auto;box-shadow: none"><code class="c++" data-trim data-noescape>
 int x = 0;
 int y(0);
-</code></pre><pre class="inline-block fragment" style="margin:0 auto;box-shadow: none"><code class="c++" data-trim data-noescape>
+</code></pre>
+<pre class="fragment" style="margin:0 auto;box-shadow: none"><code class="c++" data-trim data-noescape>
 int z{0};       // c++11 uniform initialization
 int w = {0};    // same as z (might differ in c++17)
 </code></pre>
@@ -46,12 +101,8 @@ ie1 = e2;       <span class="fragment">// an assignment; calls copy operator=</s
 
 <pre style="margin:0 auto;box-shadow: none"><code class="c++" data-trim data-noescape>
 struct Bar{};
-</code></pre><pre class="inline-block fragment" style="margin:0 auto;box-shadow: none"><code class="c++" data-trim data-noescape>
-int main() {
-    Bar success();
-    return 0;
-}
-</code></pre><pre class="inline-block fragment" style="margin:0 auto;box-shadow: none"><code class="c++" data-trim data-noescape>
+</code></pre>
+<pre class="fragment" style="margin:0 auto;box-shadow: none"><code class="c++" data-trim data-noescape>
 Bar fail();
 </code></pre>
 
@@ -60,33 +111,32 @@ Note: Anything that can be parsed as a declaration must be interpreted as one.
 ----
 
 ### Uniform initialization
-
- - Avoids:
-  - assignment ambiguity
-  - most vexing parse
-
-----
-
- - Works "everywhere"
-
-  - Default initialization values (new to C++11) <!-- .element: class="fragment" -->
-```c++
-    class Bar{
-        int x{1};   // fine, x's default value is 1
-        int y = 1;  // ditto
-        int z(0);   // error!
-    }
-```
-  - Initalizing uncopyable objects              <!-- .element: class="fragment" -->
-```c++
-    std::atomic<int> ai1{0};   // fine
-    std::atomic<int> ai1(0);   // fine
-    std::atomic<int> ai1 = 0;  // error!
-```
+Avoids:
+ - assignment ambiguity
+ - most vexing parse
 
 ----
 
- - Prohibits implicit narrowing conversions among built-in types
+Works "everywhere"
+
+ - Default initialization values (new to C++11) <!-- .element: class="fragment" -->
+```c++
+   class Bar{
+       int x{1};   // fine, x's default value is 1
+       int y = 1;  // ditto
+       int z(0);   // error!
+   }
+```
+ - Initalizing uncopyable objects              <!-- .element: class="fragment" -->
+```c++
+   std::atomic<int> ai1{0};   // fine
+   std::atomic<int> ai1(0);   // fine
+   std::atomic<int> ai1 = 0;  // error!
+```
+
+----
+
+Prohibits implicit narrowing conversions among built-in types
 
 ```c++
 int x{std::numeric_limits<long>::max()};    // compile-time error!
@@ -96,43 +146,42 @@ int z = std::numeric_limits<long>::max();   // ditto
 
 ----
 
- ### <span class="fragment"> Don't </span> use it everywhere!
+ ### <span class="fragment" data-fragment-index="2" style="color:red">Don't</span> use it everywhere!
 
- - auto deduces std::initializer_list (changed in C++17)  <!-- .element: class="fragment" -->
+auto deduces std::initializer_list <!-- .element: class="fragment" data-fragment-index="1" -->[(N3922)](http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2014/n3922.html)<!-- .element: class="fragment" -->
+
 ```c++
-    auto x{1};  // std::initializer_list in C++11/14
-                // int in C++17
+auto x{1};
 ```
+
+Note: Changed with N3922, this change is only standard for C++17 but implemented by a lot of compilers before (MSVC 19.0 - VS 2015, GCC 5.0, clang 3.8)
 
 ----
 
- - **Strongly** prefers the overloads taking std::initializer_list<span class="fragment">, **really!**</span>
+ <span class="fragment" data-fragment-index="2">**Strongly** prefers the overloads taking std::initializer_list
+ <span class="fragment" data-fragment-index="4">, **really!**</span>
 
-```c++
+ <span class="fragment" data-fragment-index="6">Even if the best-match ctor **can't** be called!</span>
+
+<pre style="margin:0 auto;box-shadow: none"><code class="c++" data-trim data-noescape>
 struct Bar {
     Bar(int i, bool b);
-    Bar(std::initializer_list<long double> il);
-    operator float() const;     // convert to float
+    Bar(std::initializer_list&ltlong double&gt il);
+    operator float() const;
 };
-Bar b1(10, true);               // first ctor
-Bar b2{10, true};               // std::initializer_list ctor
-Bar b5(b2);                     // calls copy ctor
-Bar b6{b2};                     // std::initializer_list ctor
-```
+Bar b1(10, true);   <span class="fragment" data-fragment-index="1">// first ctor</span>
+Bar b2{10, true};   <span class="fragment" data-fragment-index="2">// std::initializer_list ctor</span>
+Bar b5(b2);         <span class="fragment" data-fragment-index="3">// calls copy ctor</span>
+Bar b6{b2};         <span class="fragment" data-fragment-index="4">// std::initializer_list ctor</span>
+</code></pre>
+<pre class="fragment" data-fragment-index="5" style="margin:0 auto;box-shadow: none"><code class="c++" data-trim data-noescape>
+struct Foo { Foo(std::initializer_list&ltbool&gt); };
+Foo b{10, 5.0};     <span class="fragment" data-fragment-index="6">// error! requires narrowing conversions</span>
+</code></pre>
 
 ----
 
- - **Really!** Even if the best-match ctor can't be called
-
-```c++
-struct Bar {
-    Bar(int i, double b);
-    Bar(std::initializer_list<bool> il);
-};
-Bar b{10, 5.0}; // error! requires narrowing conversions
-```
-
- - Unless there is no way to convert the types
+Unless there is no way to convert the types
 
 ```c++
 struct Bar {
@@ -142,19 +191,27 @@ struct Bar {
 Bar b{10, 5.0}; // now calls first ctor
 ```
 
- - Or it's empty...
+<span class="fragment" data-fragment-index="1">Or it's empty... </span>
 
-```c++
-Bar b{{}};      // in which case you have to call it this way
-```
+<pre class="fragment" data-fragment-index="1" style="margin:0 auto;box-shadow: none"><code class="c++" data-trim data-noescape>
+Bar b{};    // calls default ctor
+</code></pre>
+<pre class="fragment" data-fragment-index="2" style="margin:0 auto;box-shadow: none"><code class="c++" data-trim data-noescape>
+Bar b{{}};  // calls init list ctor
+</code></pre>
 
 ---
 
-## Initializer List
+## <span class="fragment" data-fragment-index="1">Initializer List</span>
 
 ```c++
-std::vector<int> vec{1, 2, 3};
+std::vector<int> vec;
+vec.push_back(1); vec.push_back(2); vec.push_back(3);
 ```
+
+<pre class="fragment" data-fragment-index="1" style="margin:0 auto;box-shadow: none"><code class="c++" data-trim data-noescape>
+std::vector&ltint&gt vec{1, 2, 3};
+</code></pre>
 
 ----
 
@@ -178,28 +235,40 @@ std::vector<Bar> vec{1, 2, 3};
 
 ---
 
-## Type Deduction
+## <span class="fragment" data-fragment-index="1">Type Deduction<span>
 
 ```c++
-std::unique_ptr<std::unordered_map<std::string, std::string>> uptrmapss = ...;
+std::unique_ptr<std::unordered_map<std::string, std::string>> uptrmapss = some_factory();
 ```
 
-```c++
+<pre class="fragment" data-fragment-index="1" style="margin:0 auto;box-shadow: none"><code class="c++" data-trim data-noescape>
 auto uptrmapss = some_factory();
-```
+</code></pre>
 
-functions can have `auto` return type since C++14
+Note: Functions can have auto return type since C++14
+        Discuss about audience likeliness of auto
+        Todo: Slides about type deduction
 
 ---
 
-## Range-Based For Loop
+## <span class="fragment" data-fragment-index="1">Range-Based For Loop</span>
 
 ```c++
-std::vector<Bar> vec{1, 2, 3};
-for(const Bar b : vec) {
+std::vector<Bar> vec;
+for(std::vector<Bar>::const_iterator itr = vec.begin();
+    itr != vec.end();
+    ++itr)
+{
     // ...
 }
 ```
+
+<pre class="fragment" data-fragment-index="1" style="margin:0 auto;box-shadow: none"><code class="c++" data-trim data-noescape>
+std::vector&ltBar&gt vec;
+for(const Bar b : vec) {
+    // ...
+}
+</code></pre>
 
 ---
 
@@ -344,41 +413,12 @@ int main() {
 }
 ```
 
-TODO: Structured Bindings
+Note: TODO: Structured Bindings
 
 ---
 
-# How Modern C++ makes things better
+# Questions?
 
-TODO: Insert sad or disgust emoji
-```c++
-struct Base {
-    Base(int value);
-};
-struct Derived {
-    Derived(int value);
-};
-int main() {
-    Bar* pointer = new Derived(0);
-    delete pointer;
-    return 0;
-}
-```
+This slide can be found on
 
-----
-
-### Smart Pointers
-
-```c++
-struct Base {
-    const int value;
-    Base(int value) : value{value} { }
-};
-struct Derived : Base {
-    Derived(int value) : Base{value} { }
-};
-int main() {
-    auto pointer = std::make_unique<Bar>(0);
-    return 0;
-}
-```
+[Github]()

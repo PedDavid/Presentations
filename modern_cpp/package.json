@@ -1,0 +1,15 @@
+{
+  "name": "modern_cpp",
+  "version": "1.0.0",
+  "description": "Presentation about modern c++",
+  "dependencies": {},
+  "scripts": {
+    "start": "reveal-md slides.md -w"
+  },
+  "devDependencies": {
+    "phantom": "^4.0.3",
+    "reveal-md": "^0.3.0"
+  },
+  "author": "PedDavid",
+  "license": "MIT"
+}
