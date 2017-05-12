@@ -74,6 +74,100 @@ Note: std::make_unique<T> is C++14 only
 
 ---
 
+# How Modern C++ makes things better
+
+Note: Insert sad or disgust emoji
+Note: Check insert and const
+```c++
+int main() {
+    std::map<intm std::string> map;
+    map[1] = "Hi"; map[2] = "World";
+    int product = 1;
+    for (std::map<int, std::string>::const_iterator itr = map.begin();
+        itr != vec.end();
+        ++itr) 
+    {
+        product *= itr->first;
+        std::cout << itr->second;
+    }
+    return 0;
+}
+```
+
+----
+
+### Initializer lists
+
+```c++
+int main() {
+    const std::map<int, std::string> map{{1, "Hi"}, {2, "World"}};
+    int product = 1;
+    for (std::map<int, std::string>::const_iterator itr = map.begin();
+        itr != vec.end();
+        ++itr) 
+    {
+        product *= itr->first;
+        std::cout << itr->second;
+    }
+    return 0;
+}
+```
+
+----
+
+### `auto`
+
+```c++
+int main() {
+    const std::map<int, std::string> map{{1, "Hi"}, {2, "World"}};
+    int product = 1;
+    for (auto itr = map.begin();
+        itr != map.end();
+        ++itr) 
+    {
+        product *= itr->first;
+        std::cout << itr->second;
+    }
+    return 0;
+}
+```
+
+----
+
+### Range-Based For Loop
+
+```c++
+int main() {
+    const std::map<int, std::string> map{{1, "Hi"}, {2, "World"}};
+    int product = 1;
+    for (const auto& val : map) {
+        product *= val.first;
+        std::cout << val.second;
+    }
+    return 0;
+}
+```
+
+----
+
+### Structured Bindings (C++17)
+
+```c++
+int main() {
+    const std::map<int, std::string> map{{1, "Hi"}, {2, "World"}};
+    int product = 1;
+    for (const auto& [key, name] : map) {
+        product *= key;
+        std::cout << name;
+    }
+    return 0;
+}
+```
+
+Note: TODO: Structured Bindings
+
+---
+
 ## Variable initialization
 
 <pre style="margin:0 auto;box-shadow: none"><code class="c++" data-trim data-noescape>
@@ -320,100 +414,6 @@ std::unique_ptr<T> make_unique(Ts&&... params)
     //  this would make vec{10, 20}, a vec with 2 elements, 10 and 20
 }
 ```
-
----
-
-# How Modern C++ makes things better
-
-Note: Insert sad or disgust emoji
-Note: Check insert and const
-```c++
-int main() {
-    std::map<intm std::string> map;
-    map[1] = "Hi"; map[2] = "World";
-    int product = 1;
-    for (std::map<int, std::string>::const_iterator itr = map.begin();
-        itr != vec.end();
-        ++itr) 
-    {
-        product *= itr->first;
-        std::cout << itr->second;
-    }
-    return 0;
-}
-```
-
-----
-
-### Initializer lists
-
-```c++
-int main() {
-    const std::map<int, std::string> map{{1, "Hi"}, {2, "World"}};
-    int product = 1;
-    for (std::map<int, std::string>::const_iterator itr = map.begin();
-        itr != vec.end();
-        ++itr) 
-    {
-        product *= itr->first;
-        std::cout << itr->second;
-    }
-    return 0;
-}
-```
-
-----
-
-### `auto`
-
-```c++
-int main() {
-    const std::map<int, std::string> map{{1, "Hi"}, {2, "World"}};
-    int product = 1;
-    for (auto itr = map.begin();
-        itr != map.end();
-        ++itr) 
-    {
-        product *= itr->first;
-        std::cout << itr->second;
-    }
-    return 0;
-}
-```
-
-----
-
-### Range-Based For Loop
-
-```c++
-int main() {
-    const std::map<int, std::string> map{{1, "Hi"}, {2, "World"}};
-    int product = 1;
-    for (const auto& val : map) {
-        product *= val.first;
-        std::cout << val.second;
-    }
-    return 0;
-}
-```
-
-----
-
-### Structured Bindings (C++17)
-
-```c++
-int main() {
-    const std::map<int, std::string> map{{1, "Hi"}, {2, "World"}};
-    int product = 1;
-    for (const auto& [key, name] : map) {
-        product *= key;
-        std::cout << name;
-    }
-    return 0;
-}
-```
-
-Note: TODO: Structured Bindings
 
 ---
 
