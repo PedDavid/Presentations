@@ -313,13 +313,51 @@ Note: Available in C++17
 
 ---
 
-## Lambdas
+### <span class="fragment" data-fragment-index="1">Always Const</class>
 
-```c++
-int one{1};
-auto sum_one = [one](const int rhs){ return one + rhs; };
-auto res = sum_one(2);
-```
+<pre style="margin:0 auto;box-shadow: none"><code class="c++" data-trim data-noescape>
+std::string tooMuchWork;
+tooMuchWork = "A somewhat rather long string";
+</code></pre>
+<pre class="fragment" data-fragment-index="1" style="margin:0 auto;box-shadow: none"><code class="c++" data-trim data-noescape>
+const std::string lessWork = "A somewhat rather long string";
+</code></pre>
+
+Note: This slide is more an advice than a new feature
+        First we're creating the string then reassigning it
+        Always const, in this case the construction is roughly 32% more efficient
+        But there are things that not even const can do...
+        Brief talk about constexpr
+
+---
+
+## <span class="fragment" data-fragment-index="1">Lambdas</class>
+### <span class="fragment" data-fragment-index="1">IIFE</class>
+
+<pre style="margin:0 auto;box-shadow: none"><code class="c++" data-trim data-noescape>
+const int i = std::rand();
+std::string tooMuchWorkAgain;
+switch(i % 4) {
+    case 0: tooMuchWorkAgain = "long string is mod 0"; break;
+    // ...
+}
+</code></pre>
+<pre class="fragment" data-fragment-index="1" style="margin:0 auto;box-shadow: none"><code class="c++" data-trim data-noescape>
+const std::string lessWork = [i](){
+    switch(i % 4) {
+        case 0: return "long string is mod 0";
+        // ...
+    }
+}();
+</code></pre>
+<pre class="fragment" data-fragment-index="2" style="margin:0 auto;box-shadow: none"><code class="c++" data-trim data-noescape>
+const auto sum2 = [](int value){ return value + 2; }; 
+</code></pre>
+
+Note: IIFE(Immediately invocked function expression) 
+        Lambdas are one case of types only known to compilers
+        In C++14 lambdas can use auto parameters
+        Using auto, compared to std::function is almost always smaller and faster
 
 ---
 
