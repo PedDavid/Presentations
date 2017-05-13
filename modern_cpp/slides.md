@@ -308,6 +308,10 @@ int main() {
 Note: Available in C++17
 
 ---
+<!-- element: id="auto" -->
+## Auto
+
+---
 
 ## Lambdas
 
