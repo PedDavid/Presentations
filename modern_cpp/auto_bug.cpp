@@ -4,7 +4,7 @@
 int main()
 {
     std::unordered_map<std::string, int> map {{"Hello", 1}, {"World", 2}};
-    for(std::pair<const std::string, int>& pair: map)
+    for(std::pair<std::string, int>& pair: map)
     {
         pair.second *= 10;
     }

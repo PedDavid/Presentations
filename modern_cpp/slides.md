@@ -385,7 +385,7 @@ for(const std::pair<std::string, int>& pair : map) { }
 ```
 
 Note:
-    Show Demo
+    The last two lines are in Scott Meyers book, I couldn't reproduce
 
 ---
 
@@ -444,11 +444,82 @@ Note:
 
 ---
 
+## More Features
+
+- RValue references and move constructors
+- Constexpr
+- Object construction Improvement
+- Explicit overrides and final
+- Null pointer
+
+Note:
+    RValue and move is super important but couldn't fit into this presentation
+
+    Chronic performance problem with C++03 was copies of buffer of temporaries
+
+    Overrides are important, it was very easy to create another function instead of overriding without a warning
+
+----
+
+- Strongly typed enumerations
+- Template aliases
+- Variadic templates
+- User-defined literals
+- Explicitly defaulted and deleted special member functions
+- Static assertions
+
+----
+
+### Standard Library
+
+- Threading facilities
+- tuple
+- Hash-Tables
+- regex
+- chrono
+- Type traits for metaprogramming1
+
+---
+
+## Coming with C++17
+
+- Structured Bindings
+- Nested namespaces
+- If constexpr
+- Initializers in if and switch
+- Template deduction of constructors
+- Fold expressions
+
+----
+
+### Standard Library
+
+- string_view
+- optional / any
+- filesystem
+- variant
+- byte
+
+Note:
+    Variant aka Tagged union
+
+---
+
+## The Future
+
+- Modules
+- Concepts
+- High-level concurrency
+- Contracts
+- Coroutines
+
+---
+
 ## Resources
 
 Scott Meyers, "Effective Modern C++"
 
-[Jason Turner, “Practical Performance Practices"](https://www.youtube.com/watch?v=uzF4u9KgUWI) 
+[Jason Turner, "Practical Performance Practices"](https://www.youtube.com/watch?v=uzF4u9KgUWI) 
 
 [Jason Turner, "Intro To Modern Cpp"](https://github.com/lefticus/presentations/tree/master/IntroToModernCpp)
 
@@ -456,12 +527,17 @@ Scott Meyers, "Effective Modern C++"
 
 # Questions?
 
-This slide can be found on
+This presentation can be found on
 
 [Github](https://github.com/PedDavid/Presentations/tree/master/modern_cpp)
 
-Note: Show factorial demo
-        http://en.cppreference.com/w/cpp/compiler_support ;
-        https://gcc.gnu.org/gcc-7/ ;
-        http://releases.llvm.org/ ;
-        https://blogs.msdn.microsoft.com/vcblog/2017/05/10/c17-features-in-vs-2017-3/ ;
+Note: 
+    Show factorial demo (/FA assembly, echo %errorcode%)
+
+    http://en.cppreference.com/w/cpp/compiler_support ;
+
+    https://gcc.gnu.org/gcc-7/ ;
+
+    http://releases.llvm.org/ ;
+
+    https://blogs.msdn.microsoft.com/vcblog/2017/05/10/c17-features-in-vs-2017-3/ ;
