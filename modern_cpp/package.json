@@ -7,7 +7,6 @@
     "start": "reveal-md slides.md -w"
   },
   "devDependencies": {
-    "phantom": "^4.0.3",
     "reveal-md": "^0.3.0"
   },
   "author": "PedDavid",
