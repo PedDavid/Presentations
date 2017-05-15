@@ -379,6 +379,7 @@ auto y;     // error! initializer required!
 - Programmer mistakes
 
 ```c++
+std::vector<int> v;
 unsigned sz = v.size(); //std::vector<int>::size_type
 std::unordered_map<std::string, int> map;
 for(const std::pair<std::string, int>& pair : map) { }
