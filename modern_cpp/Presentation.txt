@@ -1,0 +1,16 @@
+TypeSystem is your friend
+	explicit constructor
+	implicit operator value() const {}
+	operator"" _literal() to create user defined literal
+	
+Templates + using to remove repetition of code for TypeSystem
+	
+Using vs TypeDef
+
+Constexpr for Compile Time Checks in Const
+
+Making explicit operator value() so only set of domain specific operations are available
+
+Compile Time Polymorphism
+
+Compiler Explorer (godbolt)
